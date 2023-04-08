@@ -1,5 +1,2 @@
 ---
-services:
-  - api
-
 network_name: app_network
