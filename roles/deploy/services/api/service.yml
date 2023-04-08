@@ -1,8 +1,9 @@
 ---
 - name: "[{{ name }}] Конфигурация секрета"
   ansible.builtin.include_tasks: "../secret.yml"
+  tags: always
 
-- name: "[{{ name }}] Создаем секрет"
+- name: "[{{ name }}] Выкладка сервиса"
   block:
     - name: "[{{ name }}] Выкладываем сервис"
       community.docker.docker_swarm_service:
@@ -19,3 +20,4 @@
         secrets:
           - secret_name: "{{ name }}.env"
             filename: "/opt/app/.env"
+  tags: "{{ name }}"
