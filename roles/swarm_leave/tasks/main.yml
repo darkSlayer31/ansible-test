@@ -1,0 +1,21 @@
+---
+- name: Перевод ноды в статус drain
+  community.docker.docker_node:
+    hostname: "{{ node_name }}"
+    availability: drain
+
+- name: Проверка на наличие контейнеров
+  community.docker.docker_host_info:
+    containers: true
+  register: result
+  retries: 30
+  delay: 2
+  until: result.host_info.ContainersRunning == 0
+  delegate_to: "{{ node_name }}"
+
+- name: Удаление ноды из кластера swarm
+  ansible.builtin.command: "docker node rm {{ node_name }} --force"
+  changed_when: false
+  # community.docker.docker_swarm:
+  #   state: remove
+  #   node_id: "{{ node_name }}"
